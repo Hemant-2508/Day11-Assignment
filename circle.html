@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circle Clicker</title>
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background-color: white;
+      
+    }
+
+    .circle {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      position: absolute;
+      transform: translate(-50%, -50%);
+    }
+
+    button {
+      margin: 10px;
+      background-color: green;
+      border: none;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .buttons {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+    }
+
+    .rstbtn {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="buttons">
+    <button class="undobtn">Undo</button>
+    <button class="redobtn">Redo</button>
+    <button class="rstbtn">Reset</button>
+  </div>
+
+  <script>
+    let circles = [];
+    let removed = [];
+
+    function getRandomColor() {
+      const hue = Math.floor(Math.random() * 360);
+      return `hsl(${hue}, 100%, 50%)`;
+    }
+
+    document.body.addEventListener("click", function (event) {
+      if (event.target.closest(".buttons")) return;
+
+      let circle = document.createElement("div");
+      circle.className = "circle";
+      circle.style.left = event.clientX + "px";
+      circle.style.top = event.clientY + "px";
+      circle.style.backgroundColor = getRandomColor();
+
+      document.body.appendChild(circle);
+
+      circles.push(circle);
+      removed = [];
+    });
+
+    document.querySelector(".undobtn").addEventListener("click", function () {
+      if (circles.length > 0) {
+        let last = circles.pop();
+        last.remove();
+        removed.push(last);
+      }
+    });
+
+    document.querySelector(".redobtn").addEventListener("click", function () {
+      if (removed.length > 0) {
+        let circle = removed.pop();
+        document.body.appendChild(circle);
+        circles.push(circle);
+      }
+    });
+
+    document.querySelector(".rstbtn").addEventListener("click", function () {
+      for (let i = 0; i < circles.length; i++) {
+        circles[i].remove();
+      }
+      circles = [];
+      removed = [];
+    });
+  </script>
+
+</body>
+</html>
